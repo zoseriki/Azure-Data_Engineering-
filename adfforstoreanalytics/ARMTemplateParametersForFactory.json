@@ -1,0 +1,18 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adfforstoreanalytics"
+		},
+		"LS_ADLS_Bronze_accountKey": {
+			"value": ""
+		},
+		"LS_GitHub_JSON_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/sqlguru007/Azure-Data-Engineering/refs/heads/main/"
+		},
+		"LS_ADLS_Bronze_properties_typeProperties_url": {
+			"value": "https://strgforstoreanalytics.dfs.core.windows.net/"
+		}
+	}
+}
