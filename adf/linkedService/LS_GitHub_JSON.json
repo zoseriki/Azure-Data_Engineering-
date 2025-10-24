@@ -1,0 +1,12 @@
+{
+	"name": "LS_GitHub_JSON",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://raw.githubusercontent.com/sqlguru007/Azure-Data-Engineering/refs/heads/main/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
