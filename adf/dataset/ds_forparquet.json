@@ -1,0 +1,21 @@
+{
+	"name": "ds_forparquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Bronze",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "customers.parquet",
+				"folderPath": "Bronze",
+				"fileSystem": "storeanalytics"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
