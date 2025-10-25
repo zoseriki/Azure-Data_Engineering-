@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "HttpServerLocation",
-				"relativeUrl": "sqlguru007/Azure-Data-Engineering/refs/heads/main/projects/project2/datasets/customers.json"
+				"relativeUrl": "projects/project2/datasets/customers.json"
 			}
 		},
 		"schema": {}
