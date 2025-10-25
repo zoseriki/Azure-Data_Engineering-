@@ -7,17 +7,33 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adfforstoreanalytics"
 		},
+		"AzureSqlDatabase1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase1'"
+		},
 		"LS_ADLS_Bronze_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'LS_ADLS_Bronze'"
 		},
-		"LS_GitHub_JSON_properties_typeProperties_url": {
+		"AzureSqlDatabase1_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "https://raw.githubusercontent.com/sqlguru007/Azure-Data-Engineering/refs/heads/main/"
+			"defaultValue": "azuredatenegineeringserver.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dbforstoreanalytics "
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "storeanalyticsproject"
 		},
 		"LS_ADLS_Bronze_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://strgforstoreanalytics.dfs.core.windows.net/"
+		},
+		"LS_GitHub_JSON_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/sqlguru007/Azure-Data-Engineering/refs/heads/main/"
 		},
 		"containerUri": {
 			"type": "string",
@@ -46,14 +62,26 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureSqlDatabase1_password": {
+						"value": "[parameters('AzureSqlDatabase1_password')]"
+					},
 					"LS_ADLS_Bronze_accountKey": {
 						"value": "[parameters('LS_ADLS_Bronze_accountKey')]"
 					},
-					"LS_GitHub_JSON_properties_typeProperties_url": {
-						"value": "[parameters('LS_GitHub_JSON_properties_typeProperties_url')]"
+					"AzureSqlDatabase1_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabase1_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_userName')]"
 					},
 					"LS_ADLS_Bronze_properties_typeProperties_url": {
 						"value": "[parameters('LS_ADLS_Bronze_properties_typeProperties_url')]"
+					},
+					"LS_GitHub_JSON_properties_typeProperties_url": {
+						"value": "[parameters('LS_GitHub_JSON_properties_typeProperties_url')]"
 					}
 				}
 			},

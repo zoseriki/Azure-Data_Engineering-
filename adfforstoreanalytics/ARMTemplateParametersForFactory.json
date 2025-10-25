@@ -5,14 +5,26 @@
 		"factoryName": {
 			"value": "adfforstoreanalytics"
 		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
 		"LS_ADLS_Bronze_accountKey": {
 			"value": ""
 		},
-		"LS_GitHub_JSON_properties_typeProperties_url": {
-			"value": "https://raw.githubusercontent.com/sqlguru007/Azure-Data-Engineering/refs/heads/main/"
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "azuredatenegineeringserver.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "dbforstoreanalytics "
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "storeanalyticsproject"
 		},
 		"LS_ADLS_Bronze_properties_typeProperties_url": {
 			"value": "https://strgforstoreanalytics.dfs.core.windows.net/"
+		},
+		"LS_GitHub_JSON_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/sqlguru007/Azure-Data-Engineering/refs/heads/main/"
 		}
 	}
 }
