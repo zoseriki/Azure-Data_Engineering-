@@ -16,7 +16,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().FileName",
+					"value": "@concat(dataset().FileName, '.parquet')",
 					"type": "Expression"
 				},
 				"folderPath": "Bronze",
