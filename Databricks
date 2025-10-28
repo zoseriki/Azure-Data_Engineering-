@@ -1,1 +1,139 @@
+storage_account_key = dbutils.secrets.get(scope="store_project_scope", key="storage_account_key")
+spark.conf.set(
+    f"fs.azure.account.key.{storage_account_name}.dfs.core.windows.net",
+    storage_account_key
+)
+
+# STEP 2: LIST FILES
+display(dbutils.fs.ls(f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/Bronze/"))
+
+# Reading directly from ADLS Gen2 without mount
+#
+transac_location = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/Bronze/transactions.parquet/"
+products_location = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/Bronze/products.parquet/"
+customer_location = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/Bronze/customers.parquet/"
+
+df_transactions = spark.read.parquet(transac_location)
+display(df_transactions)
+
+df_products = spark.read.parquet(products_location)
+display(df_products)
+
+
+df_customers = spark.read.parquet(customer_location)
+display(df_customers)
+
+
+# STEP 5: CLEAN DATA
+from pyspark.sql.functions import col
+
+df_transactions = df_transactions.select(
+    col("transaction_id").cast("int"),
+    col("customer_id").cast("int"),
+    col("product_id").cast("int"),
+    col("store_id").cast("int"),
+    col("quantity").cast("int"),
+    col("transaction_date").cast("date")
+)
+
+df_products = df_products.select(
+    col("product_id").cast("int"),
+    col("product_name"),
+    col("category"),
+    col("price").cast("double")
+)
+
+#df_shop = df_shop.select(
+#    col("store_id").cast("int"),
+#    col("store_name"),
+#    col("location")
+#)
+
+df_customers = df_customers.select(
+    "customer_id", "first_name", "last_name", "email", "city", "registration_date"
+).dropDuplicates(["customer_id"])
+
+# STEP 6: JOIN THE DATAFRAMES
+df_silver = df_transactions \
+    .join(df_customers, "customer_id") \
+    .join(df_products, "product_id") \
+    .withColumn("total_amount", col("quantity") * col("price"))
+    
+#Validate the Silver Dataframes
+display(df_silver)
+
+# STEP 7: COPY TO THE SILVER CONTAINER
+
+
+## Set the Silver path inside the workspace default storage
+silver_path = "abfss://unity-catalog-storage@dbstoragem7ump2acv6sq2.dfs.core.windows.net/660761886281777/silver/"
+
+# Write the Silver DataFrame as Delta
+df_silver.write.mode("overwrite").format("delta").save(silver_path)
+
+# Create Delta table for Silver layer using the default catalog and a schema (you can use 'default' or any schema you have)
+spark.sql(f"""
+CREATE TABLE IF NOT EXISTS default.store_silver_cleaned
+USING DELTA
+LOCATION '{silver_path}'
+""")
+
+#Step 8
+# Python cell
+result = spark.sql("SELECT * FROM default.store_silver_cleaned")
+display(result)
+
+# STEP 9: CREATE A NEW DATAFRAME IN PREPARATION FOR THE GOLD LAYER
+
+# Load cleaned transactions from Silver layer
+silver_df = spark.table("default.store_silver_cleaned")
+
+# Validate the new DataFrame
+display(silver_df)
+
+display(df_silver)   # Or
+print(df_silver.count())
+
+# CREATE THE GOLD DATAFRAME BY AGGREEGATING THE SILVER DATAFRAME ACCORDING TO THE REQUIREMENT
+from pyspark.sql.functions import sum, countDistinct, avg
+
+gold_df = silver_df.groupBy(
+    "transaction_date",
+    "product_id", "product_name", "category",
+    
+).agg(
+    sum("quantity").alias("total_quantity_sold"),
+    sum("total_amount").alias("total_sales_amount"),
+    countDistinct("transaction_id").alias("number_of_transactions"),
+    avg("total_amount").alias("average_transaction_value")
+)
+
+# Validate the Gold DataFrame
+display(gold_df)
+
+
+# VALIDATE THE GOLD DATAFRAME
+
+display(gold_df)
+
+#Create the Gold Table in Databricks
+gold_path_new = "abfss://unity-catalog-storage@dbstoragem7ump2acv6sq2.dfs.core.windows.net/660761886281777/gold_v2/"
+
+# Write to new location
+gold_df.write.mode("overwrite").format("delta").save(gold_path_new)
+
+# Create a new table pointing to the new folder
+spark.sql(f"""
+CREATE TABLE store_gold_sales_summary_v2
+USING DELTA
+LOCATION '{gold_path_new}'
+""")
+
+
+# Load and display
+df_gold_check = spark.read.format("delta").load(gold_path)
+display(df_gold_check)
+
+result = spark.sql("SELECT * FROM default.store_gold_sales_summary")
+display(result)
 
